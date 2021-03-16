@@ -95,7 +95,7 @@ export default function CustomDrawer(props) {
                   );
                 }}
                 label="Bookmarks"
-                onPress={() => {}}
+                onPress={() => props.navigation.navigate("Bookmark")}
               />
               <DrawerItem
                 icon={({ color, size }) => {
@@ -108,7 +108,7 @@ export default function CustomDrawer(props) {
                   );
                 }}
                 label="Settings"
-                onPress={() => {}}
+                onPress={() => props.navigation.navigate("Settings")}
               />
               <DrawerItem
                 icon={({ color, size }) => {
@@ -121,7 +121,7 @@ export default function CustomDrawer(props) {
                   );
                 }}
                 label="Support"
-                onPress={() => {}}
+                onPress={() => props.navigation.navigate("Support")}
               />
             </Drawer.Section>
             <Drawer.Section title="Preferences">

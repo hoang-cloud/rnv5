@@ -9,15 +9,25 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 import MainTabScreen from "./screens/MainTabScreen";
 import CustomDrawer from "./screens/CustomDrawer";
+import BookmarkScreen from "./screens/BookmarkScreen";
+import SettingsScreen from "./screens/SettingsScreen";
+import SupportScreen from "./screens/SupportScreen";
+import RootStackScreen from "./screens/RootStackScreen";
 const Drawer = createDrawerNavigator();
-
+const Stack = createStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Drawer.Navigator drawerContent={(props) => <CustomDrawer {...props} />}>
-        <Drawer.Screen name="Drawer" component={MainTabScreen} />
-      </Drawer.Navigator>
+      <RootStackScreen />
     </NavigationContainer>
+    // <NavigationContainer>
+    //   <Drawer.Navigator drawerContent={(props) => <CustomDrawer {...props} />}>
+    //     <Drawer.Screen name="Drawer" component={MainTabScreen} />
+    //     <Drawer.Screen name="Bookmark" component={BookmarkScreen} />
+    //     <Drawer.Screen name="Support" component={SupportScreen} />
+    //     <Drawer.Screen name="Settings" component={SettingsScreen} />
+    //   </Drawer.Navigator>
+    // </NavigationContainer>
   );
 }
 
