@@ -14,7 +14,7 @@ import * as Animatable from "react-native-animatable";
 
 export default function SplashScreen(props) {
   return (
-    <View style={{ flex: 1, backgroundColor: "#009387" }}>
+    <View style={{ flex: 1, backgroundColor: "#21A4F1" }}>
       <View style={styles.header}>
         <View style={styles.circle}>
           <Animatable.Image

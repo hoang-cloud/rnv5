@@ -1,5 +1,6 @@
 import { View, Button, StyleSheet, Linking } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { AuthContext } from "../components/context";
 import {
   DrawerContentScrollView,
   DrawerItemList,
@@ -20,6 +21,8 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function CustomDrawer(props) {
   const [isDarkTheme, setIsDarkTheme] = React.useState(false);
+
+  const { signOut } = React.useContext(AuthContext);
   const toggleTheme = () => {
     setIsDarkTheme(!isDarkTheme);
   };
@@ -153,7 +156,7 @@ export default function CustomDrawer(props) {
             );
           }}
           label="Sign out"
-          onPress={() => {}}
+          onPress={() => signOut()}
         />
       </Drawer.Section>
     </View>
