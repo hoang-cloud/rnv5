@@ -8,8 +8,9 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Ionicons, MaterialIcons, Feather } from "@expo/vector-icons";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import * as Animatable from "react-native-animatable";
+import { AuthContext } from "../components/context";
 export default function SignInScreen(props) {
   const [data, setData] = React.useState({
     email: "",
@@ -18,6 +19,9 @@ export default function SignInScreen(props) {
     check_textInputChange: false,
     secureTextEntry: true,
   });
+
+  const { signUp } = React.useContext(AuthContext);
+
   const textInputChange = (val) => {
     if (val.length !== 0) {
       setData({
@@ -54,7 +58,7 @@ export default function SignInScreen(props) {
               onChangeText={(val) => textInputChange(val)}
             />
             {data.check_textInputChange ? (
-              <Animatable.View animation="bounceIn" duration="1500">
+              <Animatable.View animation="bounceIn">
                 <Feather name="check-circle" color="green" size={20} />
               </Animatable.View>
             ) : null}
@@ -132,7 +136,7 @@ export default function SignInScreen(props) {
             marginTop: 20,
           }}
           onPress={() => {
-            props.navigation.navigate("Signup");
+            signUp(data.email, data.password, data.confirmPassword);
           }}
         >
           <View

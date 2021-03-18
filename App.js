@@ -26,6 +26,7 @@ import SettingsScreen from "./screens/SettingsScreen";
 import SupportScreen from "./screens/SupportScreen";
 import RootStackScreen from "./screens/RootStackScreen";
 import { AuthContext } from "./components/context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 export default function App(props) {
@@ -46,16 +47,16 @@ export default function App(props) {
         return {
           ...state,
           isLoading: false,
-          token: action.token,
+          userToken: action.token,
           userName: action.id,
         };
       case "LOGOUT":
-        return { ...state, isLoading: false, token: null };
+        return { ...state, isLoading: false, userToken: null };
       case "SIGNUP":
         return {
           ...state,
           isLoading: false,
-          token: action.token,
+          userToken: action.token,
           userName: action.id,
         };
       default:
@@ -67,31 +68,55 @@ export default function App(props) {
 
   const authContext = React.useMemo(
     () => ({
-      signIn: (userName, password) => {
+      signIn: async (userName, password) => {
         // setUserToken("kkkk");
         // setIsLoading(false);
-        let username;
         let token;
-        // if (userName === "user" && password === "password") {
-        // }
-        dispatch({ type: "LOGIN", id: userName, token: "xxx" });
+        if (userName === "user" && password === "password") {
+          try {
+            token = "xxx";
+            await AsyncStorage.setItem("userToken", token);
+          } catch (e) {
+            console.log(e);
+          }
+        }
+        dispatch({ type: "LOGIN", id: userName, token });
+        console.log(token);
       },
-      signOut: () => {
+      signOut: async () => {
         // setUserToken(null);
         // setIsLoading(false);
+        try {
+          await AsyncStorage.removeItem("userToken");
+        } catch (e) {
+          console.log(e);
+        }
         dispatch({ type: "LOGOUT" });
       },
-      signUp: () => {
-        setUserToken("kkkk");
-        setIsLoading(false);
+      signUp: (userName, password, confirmPassword) => {
+        let token;
+        if (
+          userName === "user" &&
+          password === "password" &&
+          confirmPassword === "password"
+        ) {
+          token = "xxx";
+        }
+        dispatch({ type: "SIGNUP", id: userName, token });
       },
     }),
     []
   );
 
   useEffect(() => {
-    setTimeout(() => {
-      dispatch({ type: "RETRIEVE_TOKEN", token: "xxx" });
+    setTimeout(async () => {
+      let token = null;
+      try {
+        token = await AsyncStorage.getItem("userToken");
+      } catch (e) {
+        console.log(e);
+      }
+      dispatch({ type: "RETRIEVE_TOKEN", token });
     }, 1000);
   }, []);
 
@@ -105,7 +130,7 @@ export default function App(props) {
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
-        {state.userToken == null ? (
+        {state.userToken ? (
           <Drawer.Navigator
             drawerContent={(props) => <CustomDrawer {...props} />}
           >

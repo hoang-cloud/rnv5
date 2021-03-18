@@ -90,7 +90,7 @@ export default function SignInScreen(props) {
             alignItems: "center",
             marginTop: 20,
           }}
-          onPress={() => signIn()}
+          onPress={() => signIn(data.email, data.password)}
         >
           <View
             style={{
