@@ -27,100 +27,33 @@ import SupportScreen from "./screens/SupportScreen";
 import RootStackScreen from "./screens/RootStackScreen";
 import { AuthContext } from "./components/context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createStore, applyMiddleware, bindActionCreators } from "redux";
+import thunk from "redux-thunk";
+import { Provider } from "react-redux";
+import rootReducer from "./redux/reducers";
+import { connect } from "react-redux";
+import { retrieveToken } from "./redux/actions/index";
+import { LOGOUT, RETRIEVE_TOKEN } from "./redux/constants/index";
+const store = createStore(rootReducer, applyMiddleware(thunk));
+
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 export default function App(props) {
-  // const [isLoading, setIsLoading] = React.useState(true);
-  // const [userToken, setUserToken] = React.useState(null);
-
-  const initialState = {
+  const [data, setData] = React.useState({
     isLoading: true,
-    userName: null,
-    userToken: null,
-  };
-
-  const reducer = (state, action) => {
-    switch (action.type) {
-      case "RETRIEVE_TOKEN":
-        return { ...state, isLoading: false, userToken: action.token };
-      case "LOGIN":
-        return {
-          ...state,
-          isLoading: false,
-          userToken: action.token,
-          userName: action.id,
-        };
-      case "LOGOUT":
-        return { ...state, isLoading: false, userToken: null };
-      case "SIGNUP":
-        return {
-          ...state,
-          isLoading: false,
-          userToken: action.token,
-          userName: action.id,
-        };
-      default:
-        return { ...state };
-    }
-  };
-
-  const [state, dispatch] = React.useReducer(reducer, initialState);
-
-  const authContext = React.useMemo(
-    () => ({
-      signIn: async (userName, password) => {
-        // setUserToken("kkkk");
-        // setIsLoading(false);
-        let token;
-        if (userName === "user" && password === "password") {
-          try {
-            token = "xxx";
-            await AsyncStorage.setItem("userToken", token);
-          } catch (e) {
-            console.log(e);
-          }
-        }
-        dispatch({ type: "LOGIN", id: userName, token });
-        console.log(token);
-      },
-      signOut: async () => {
-        // setUserToken(null);
-        // setIsLoading(false);
-        try {
-          await AsyncStorage.removeItem("userToken");
-        } catch (e) {
-          console.log(e);
-        }
-        dispatch({ type: "LOGOUT" });
-      },
-      signUp: (userName, password, confirmPassword) => {
-        let token;
-        if (
-          userName === "user" &&
-          password === "password" &&
-          confirmPassword === "password"
-        ) {
-          token = "xxx";
-        }
-        dispatch({ type: "SIGNUP", id: userName, token });
-      },
-    }),
-    []
-  );
-
+    token: null,
+  });
   useEffect(() => {
-    setTimeout(async () => {
-      let token = null;
-      try {
-        token = await AsyncStorage.getItem("userToken");
-      } catch (e) {
-        console.log(e);
-      }
-      dispatch({ type: "RETRIEVE_TOKEN", token });
-    }, 1000);
+    store.dispatch({ type: RETRIEVE_TOKEN });
+    const { loginState } = store.getState();
+    setData({
+      ...data,
+      isLoading: loginState.isLoading,
+      token: loginState.token,
+    });
   }, []);
 
-  if (state.isLoading) {
+  if (data.isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" />
@@ -128,9 +61,9 @@ export default function App(props) {
     );
   }
   return (
-    <AuthContext.Provider value={authContext}>
+    <Provider store={store}>
       <NavigationContainer>
-        {state.userToken ? (
+        {data.token ? (
           <Drawer.Navigator
             drawerContent={(props) => <CustomDrawer {...props} />}
           >
@@ -143,7 +76,7 @@ export default function App(props) {
           <RootStackScreen />
         )}
       </NavigationContainer>
-    </AuthContext.Provider>
+    </Provider>
   );
 }
 

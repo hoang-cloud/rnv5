@@ -22,7 +22,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 export default function CustomDrawer(props) {
   const [isDarkTheme, setIsDarkTheme] = React.useState(false);
 
-  const { signOut } = React.useContext(AuthContext);
   const toggleTheme = () => {
     setIsDarkTheme(!isDarkTheme);
   };
@@ -156,7 +155,7 @@ export default function CustomDrawer(props) {
             );
           }}
           label="Sign out"
-          onPress={() => signOut()}
+          onPress={() => {}}
         />
       </Drawer.Section>
     </View>

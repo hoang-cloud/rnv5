@@ -8,18 +8,18 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Ionicons, MaterialIcons, Feather } from "@expo/vector-icons";
-import { useState, useContext } from "react";
 import * as Animatable from "react-native-animatable";
-import { AuthContext } from "../components/context";
-export default function SignInScreen(props) {
+import { connect } from "react-redux";
+import { LOGIN } from "../redux/constants";
+import { bindActionCreators } from "redux";
+import { signIn } from "../redux/actions/index";
+function SignInScreen(props) {
   const [data, setData] = React.useState({
     email: "",
     password: "",
     check_textInputChange: false,
     secureTextEntry: true,
   });
-
-  const signIn = React.useContext(AuthContext).signIn;
 
   const textInputChange = (val) => {
     if (val.length !== 0) {
@@ -90,7 +90,9 @@ export default function SignInScreen(props) {
             alignItems: "center",
             marginTop: 20,
           }}
-          onPress={() => signIn(data.email, data.password)}
+          onPress={() => {
+            props.signIn(data.email, data.password);
+          }}
         >
           <View
             style={{
@@ -134,6 +136,16 @@ export default function SignInScreen(props) {
     </View>
   );
 }
+
+const mapDispatchProps = (dispatch) => bindActionCreators({ signIn }, dispatch);
+
+const mapStateProps = (state) => {
+  return {
+    loginState: state.loginState,
+  };
+};
+
+export default connect(mapStateProps, mapDispatchProps)(SignInScreen);
 
 const styles = StyleSheet.create({
   container: {
